@@ -9,10 +9,6 @@ var express = require('express'),
     User = require("./views/models/user");
 
 
-// var mongoClient = require("mongodb").MongoClient;
-// mongoClient.connect("mongodb://intern:QHT8KwmKU84sOrWaWS2Gkq65m5lJ6bg7YDQz9nqbIkFz4neEWAJte5qcIY9MDizEvYrR4FelmlvUIC5TQqDvXA%3D%3D@intern.documents.azure.com:10255/?ssl=true", function (err, client) {
-//   client.close();
-// });
 mongoose.connect("mongodb://intern:QHT8KwmKU84sOrWaWS2Gkq65m5lJ6bg7YDQz9nqbIkFz4neEWAJte5qcIY9MDizEvYrR4FelmlvUIC5TQqDvXA%3D%3D@intern.documents.azure.com:10255/?ssl=true");
 
 
@@ -28,13 +24,12 @@ app.use(bodyParser()); // get information from html forms
 
 // Get Mongoose to use the global promise library
 mongoose.Promise = global.Promise;
-//Get the default connection
-var db = mongoose.connection;
 
 app.set("view engine", "ejs");
 app.use(express.static((__dirname + '/views/models')));
 
 
+// route for adding a new event
 app.post('/create', function(req, res) {
     Event.create({ Eventname: req.body.Eventname, Eventdate: req.body.Eventdate }, function(err, event) {
         if (err)
@@ -46,6 +41,7 @@ app.post('/create', function(req, res) {
 });
 
 
+//route for adding a new user
 app.post('/users', function(req, res) {
     User.findOne({ Email: req.body.Email }, function(err, User) {
         console.log(User.Email);
@@ -61,17 +57,8 @@ app.post('/users', function(req, res) {
 
 });
 
-app.get('/attendEvent', function(req, res) {
-    User.findOne({ _id: Event._id }, function(err, User) {
-        if (err)
-            console.log(err);
-        var str = 'user is attending ' + Event.Eventname;
-        console.log(str);
 
-    });
-
-});
-
+//route for adding a event for the user
 app.post('/addEvent', function(req, res) {
     
     //checking if user has already registered for the event
